@@ -167,10 +167,19 @@ int main(int argc, char ** argv){
         
         int vi[3];      // indexes
         float v[3][3];  // coordinates
+        float ni[3];
+        float n[3][3];
+
+
          for (int k = 0; k < 3; k++) {
           vi[0] = idx0.vertex_index;
           vi[1] = idx1.vertex_index;
           vi[2] = idx2.vertex_index;
+          
+          ni[0] = idx0.normal_index;
+          ni[1] = idx1.normal_index;
+          ni[2] = idx2.normal_index;
+
           assert(vi[0] >= 0);
           assert(vi[1] >= 0);
           assert(vi[2] >= 0);
@@ -178,6 +187,12 @@ int main(int argc, char ** argv){
           v[0][k] = attrib.vertices[3 * vi[0] + k];
           v[1][k] = attrib.vertices[3 * vi[1] + k];
           v[2][k] = attrib.vertices[3 * vi[2] + k];
+        
+          n[0][k] = attrib.normals[3 * ni[0] + k];
+          n[1][k] = attrib.normals[3 * ni[1] + k];
+          n[2][k] = attrib.normals[3 * ni[2] + k];
+        
+
         }
 
         float area;
@@ -222,7 +237,11 @@ int main(int argc, char ** argv){
             float py = v[0][1] + lambda_a*(v[1][1] - v[0][1]) + lambda_b*(v[2][1] - v[0][1]);
             float pz = v[0][2] + lambda_a*(v[1][2] - v[0][2]) + lambda_b*(v[2][2] - v[0][2]);
 
-            printf("%f %f %f %d %d %d\n", px, py, pz, int(r), int(g), int(b));
+            float nx = n[0][0] + lambda_a*(n[1][0] - n[0][0]) + lambda_b*(n[2][0] - n[0][0]);
+            float ny = n[0][1] + lambda_a*(n[1][1] - n[0][1]) + lambda_b*(n[2][1] - n[0][1]);
+            float nz = n[0][2] + lambda_a*(n[1][2] - n[0][2]) + lambda_b*(n[2][2] - n[0][2]);
+
+            printf("%f %f %f %f %f %f %d %d %d\n", px, py, pz, nx, ny, nz, int(r), int(g), int(b));
         }
 
     }

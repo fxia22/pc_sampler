@@ -19,10 +19,11 @@ with open(args.infile) as f:
         if line[0] != '#':
             ls = line.strip().split()
             x,y,z = float(ls[0]), float(ls[1]), float(ls[2])
+            nx,ny,nz = float(ls[3]), float(ls[4]), float(ls[5])
             if (x >= minx) and (x <= maxx) and (y >= miny) and (y <=maxy) and (z >=minz) and (z <= maxz):
-                vertex.append((x, y, z, int(ls[3]), int(ls[4]), int(ls[5])))
+                vertex.append((x, y, z, nx, ny, nz, int(ls[6]), int(ls[7]), int(ls[8])))
 
-vertex = np.array(vertex, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4'), ('red', 'u1'), ('green', 'u1'), ('blue', 'u1')])
+vertex = np.array(vertex, dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4'), ('nx', 'f4'), ('ny', 'f4'), ('nz', 'f4'), ('red', 'u1'), ('green', 'u1'), ('blue', 'u1')])
 el = PlyElement.describe(vertex, 'vertex')
 PlyData([el]).write(args.outfile)
 
