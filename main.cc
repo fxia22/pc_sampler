@@ -8,6 +8,7 @@
 #include <math.h>  
 #include <random>
 
+
 static std::string GetBaseDir(const std::string& filepath) {
   if (filepath.find_last_of("/\\") != std::string::npos)
     return filepath.substr(0, filepath.find_last_of("/\\"));
@@ -30,6 +31,12 @@ static bool FileExists(const std::string& abs_filename) {
 
 
 int main(int argc, char ** argv){
+
+    int point_per_sqm = 10000;
+    if (argc >= 3) {
+      point_per_sqm = std::stoi(argv[2]);
+    }
+
     printf("# pc sampler\n");
     std::default_random_engine generator;
     std::uniform_real_distribution<double> distribution(0.0,1.0);
@@ -104,7 +111,7 @@ int main(int argc, char ** argv){
 
     int s = 0; //take first shape
 
-      for (size_t f = 0; f < shapes[s].mesh.indices.size() / 3; f++) {
+    for (size_t f = 0; f < shapes[s].mesh.indices.size() / 3; f++) {
 
         tinyobj::index_t idx0 = shapes[s].mesh.indices[3 * f + 0];
         tinyobj::index_t idx1 = shapes[s].mesh.indices[3 * f + 1];
@@ -183,14 +190,18 @@ int main(int argc, char ** argv){
 
         area = sqrt(s * (s-l0) * (s-l1) * (s-l2));
         
-        int nsamples = int(area / 0.000113);
+        int nsamples = int(area * point_per_sqm);
         printf("# area %f nsamples %d \n", area, nsamples);
-
         
 
         for (int j = 0; j < nsamples; j++) {
-            float lambda_a = distribution(generator);
-            float lambda_b = distribution(generator);
+            float lambda_a = 1;
+            float lambda_b = 1;
+
+            while (lambda_a + lambda_b > 1) {
+              lambda_a = distribution(generator);
+              lambda_b = distribution(generator);
+            }
 
             float coordx = tc[0][0] + lambda_a * (tc[1][0] - tc[0][0]) + lambda_b*(tc[2][0] - tc[0][0]);
             float coordy = tc[0][1] + lambda_a * (tc[1][1] - tc[0][1]) + lambda_b*(tc[2][1] - tc[0][1]);
@@ -212,9 +223,7 @@ int main(int argc, char ** argv){
             float pz = v[0][2] + lambda_a*(v[1][2] - v[0][2]) + lambda_b*(v[2][2] - v[0][2]);
 
             printf("%f %f %f %d %d %d\n", px, py, pz, int(r), int(g), int(b));
-    
         }
-        
 
     }
 
