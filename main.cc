@@ -33,6 +33,11 @@ static bool FileExists(const std::string& abs_filename) {
 int main(int argc, char ** argv){
 
     int point_per_sqm = 10000;
+
+    if (argc < 2) {
+      printf("./pc_sampler mesh.obj <optional: points per square meter> > pc.xyz");
+      return 1;
+    }
     if (argc >= 3) {
       point_per_sqm = std::stoi(argv[2]);
     }
